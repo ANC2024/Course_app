@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Courses</title>
+  <style>
+    body { font-family: system-ui, Arial; background:#f6f7fb; margin:0; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
+    .card { background:#fff; border:1px solid #e7e7ef; border-radius:16px; padding:16px; box-shadow: 0 6px 18px rgba(0,0,0,.04); }
+    h1 { font-size: 20px; margin: 0 0 10px; }
+    .muted { color:#666; font-size: 14px; margin-top:6px; }
+    .btn { width:100%; border:0; border-radius:12px; padding:14px; font-size:16px; cursor:pointer; }
+    .btn.primary { background:#0d6efd; color:#fff; }
+    .btn.secondary { background:#eef2ff; color:#1f2a44; margin-top:10px; }
+    .preview { width:100%; margin-top:12px; border-radius:12px; border:1px dashed #cfd3e6; overflow:hidden; background:#fafbff; display:none; }
+    .preview img { width:100%; display:block; }
+    .deal { padding:12px; border:1px solid #eee; border-radius:12px; margin-top:10px; background:#fff; }
+    .tag { display:inline-block; padding:4px 8px; border-radius:999px; background:#f1f5ff; font-size:12px; color:#2a3a66; }
+    .error { color:#b00020; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>🛒 Comparateur Courses</h1>
+      <div class="muted">Prends une photo de ta liste, puis analyse.</div>
+
+      <input id="file" type="file" accept="image/*" capture="environment" style="margin-top:12px;" />
+
+      <div id="preview" class="preview">
+        <img id="img" alt="Aperçu" />
+      </div>
+
+      <button id="btn" class="btn primary" style="margin-top:12px;" onclick="sendPhoto()">Analyser</button>
+      <button class="btn secondary" onclick="resetAll()">Réinitialiser</button>
+
+      <div id="status" class="muted" style="margin-top:10px;"></div>
+      <div id="result" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+<script>
+const WEBHOOK_URL = "TON_URL_WEBHOOK_N8N"; // ex: https://xxxxx.n8n.cloud/webhook/courses-photo
+
+const fileInput = document.getElementById('file');
+const preview = document.getElementById('preview');
+const img = document.getElementById('img');
+const statusEl = document.getElementById('status');
+const resultEl = document.getElementById('result');
+const btn = document.getElementById('btn');
+
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files?.[0];
+  if (!f) return;
+  img.src = URL.createObjectURL(f);
+  preview.style.display = 'block';
+  statusEl.textContent = "✅ Photo prête. Lance l’analyse.";
+  resultEl.innerHTML = "";
+});
+
+async function sendPhoto() {
+  const f = fileInput.files?.[0];
+  if (!f) { statusEl.innerHTML = '<span class="error">❌ Choisis une photo.</span>'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = "⏳ Analyse en cours…";
+  resultEl.innerHTML = "";
+
+  try {
+    const form = new FormData();
+    form.append("photo", f, f.name);
+
+    const res = await fetch(WEBHOOK_URL, { method: "POST", body: form });
+    if (!res.ok) throw new Error("Erreur n8n: " + res.status);
+
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) {
+      statusEl.textContent = "✅ Terminé, mais aucun résultat.";
+      return;
+    }
+
+    statusEl.textContent = "✅ Terminé.";
+    resultEl.innerHTML = data.map(d => `
+      <div class="deal">
+        <div class="tag">${esc(d.enseigne ?? "—")}</div><br><br>
+        <strong>${esc(d.produit ?? "Produit")}</strong><br>
+        Prix: <strong>${esc(String(d.prix ?? "-"))} €</strong>
+        ${d.url ? `<br><a href="${esc(d.url)}" target="_blank" rel="noreferrer">Voir l’offre</a>` : ""}
+      </div>
+    `).join("");
+
+  } catch (e) {
+    statusEl.innerHTML = '<span class="error">❌ ' + esc(String(e.message || e)) + '</span>';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function resetAll() {
+  fileInput.value = "";
+  preview.style.display = "none";
+  img.src = "";
+  statusEl.textContent = "";
+  resultEl.innerHTML = "";
+}
+
+function esc(s){return s.replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c]));}
+</script>
+</body>
+</html>
