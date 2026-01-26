@@ -6,15 +6,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#0b1220">
   <title>Courses</title>
-
-  <!-- (optionnel mais recommandé) -->
   <link rel="manifest" href="manifest.json">
 
   <style>
     :root{
       --bg:#0b1220;
       --card:#101a33;
-      --card2:#0f1730;
       --text:#e9eefc;
       --muted:#a8b3d6;
       --line:rgba(255,255,255,.10);
@@ -22,10 +19,10 @@
       --accent2:#7c5cff;
       --ok:#3ddc97;
       --danger:#ff5a7a;
+      --warn:#ffd166;
       --shadow: 0 14px 40px rgba(0,0,0,.35);
       --radius: 18px;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -36,13 +33,11 @@
                   var(--bg);
       min-height:100vh;
     }
-
     .safe{
       padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto;
     }
-
     .topbar{
       display:flex;
       align-items:center;
@@ -50,26 +45,14 @@
       gap:12px;
       margin-bottom:14px;
     }
-    .brand{
-      display:flex; gap:10px; align-items:center;
-    }
+    .brand{ display:flex; gap:10px; align-items:center; }
     .logo{
       width:42px; height:42px; border-radius:14px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       box-shadow: var(--shadow);
     }
-    h1{
-      font-size:18px;
-      margin:0;
-      letter-spacing:.2px;
-      line-height:1.2;
-    }
-    .subtitle{
-      margin:2px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
+    h1{ font-size:18px; margin:0; letter-spacing:.2px; line-height:1.2; }
+    .subtitle{ margin:2px 0 0; color:var(--muted); font-size:13px; }
     .pill{
       font-size:12px;
       color:var(--muted);
@@ -79,7 +62,6 @@
       background: rgba(255,255,255,.04);
       backdrop-filter: blur(8px);
     }
-
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--line);
@@ -87,16 +69,6 @@
       padding: 14px;
       box-shadow: var(--shadow);
     }
-
-    .hero{
-      display:flex; flex-direction:column; gap:12px;
-    }
-
-    .fileRow{
-      display:flex; gap:10px; flex-wrap:wrap;
-      align-items:center;
-    }
-
     input[type="file"]{
       width:100%;
       padding: 12px;
@@ -105,8 +77,7 @@
       background: rgba(15,23,48,.45);
       color: var(--muted);
     }
-
-    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; }
+    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
     .btn{
       flex:1;
       min-width: 160px;
@@ -129,12 +100,11 @@
       border:1px solid var(--line);
     }
     .btn:disabled{ opacity:.55; cursor:not-allowed; }
-
     .status{
       font-size: 13px;
       color: var(--muted);
       display:flex; gap:10px; align-items:center;
-      margin-top: 2px;
+      margin-top: 10px;
     }
     .dot{
       width:10px; height:10px; border-radius:999px;
@@ -142,7 +112,7 @@
     }
     .dot.ok{ background: var(--ok); }
     .dot.err{ background: var(--danger); }
-    .dot.wait{ background: #ffd166; }
+    .dot.wait{ background: var(--warn); }
 
     .preview{
       display:none;
@@ -150,6 +120,7 @@
       border-radius: 16px;
       border:1px solid var(--line);
       background: rgba(15,23,48,.35);
+      margin-top:12px;
     }
     .preview img{ width:100%; display:block; }
 
@@ -159,25 +130,25 @@
       color: var(--muted);
       letter-spacing:.2px;
     }
-
-    .deals{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .deals{ display:flex; flex-direction:column; gap:10px; }
     .deal{
       background: rgba(15,23,48,.40);
       border:1px solid var(--line);
       border-radius: 16px;
       padding: 12px;
       display:flex;
+      flex-direction: column;
+      gap:10px;
+    }
+    .dealHeader{
+      display:flex;
       justify-content:space-between;
       gap:12px;
+      align-items:flex-start;
     }
-    .dealLeft{ min-width: 0; }
     .dealTitle{
       margin:0;
-      font-weight: 750;
+      font-weight: 800;
       font-size: 15px;
       line-height: 1.25;
       word-break: break-word;
@@ -192,7 +163,7 @@
       display:inline-flex;
       align-items:center;
       gap:6px;
-      padding: 5px 9px;
+      padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.05);
@@ -200,9 +171,9 @@
       font-size: 12px;
       white-space: nowrap;
     }
-    .price{
+    .count{
       font-weight: 800;
-      font-size: 16px;
+      font-size: 13px;
       white-space: nowrap;
       align-self: flex-start;
       padding: 6px 10px;
@@ -210,18 +181,24 @@
       background: rgba(110,168,254,.16);
       border: 1px solid rgba(110,168,254,.35);
     }
-    a{
-      color: #bcd6ff;
-      text-decoration: none;
+    .promoLine{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding:10px;
+      font-size: 13px;
+      color: rgba(233,238,252,.9);
+      white-space: pre-wrap;
+      line-height: 1.25;
     }
-    a:hover{ text-decoration: underline; }
-
     .hint{
       margin-top:10px;
       font-size: 12.5px;
       color: rgba(233,238,252,.75);
       line-height: 1.35;
     }
+    a{ color:#bcd6ff; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
   </style>
 </head>
 
@@ -232,16 +209,14 @@
         <div class="logo" aria-hidden="true"></div>
         <div>
           <h1>Courses</h1>
-          <div class="subtitle">Scan ta liste → meilleurs prix</div>
+          <div class="subtitle">Photo → meilleurs magasins → promos</div>
         </div>
       </div>
-      <div class="pill">Version 1.0</div>
+      <div class="pill">PWA</div>
     </div>
 
-    <div class="card hero">
-      <div class="fileRow">
-        <input id="file" type="file" accept="image/*" capture="environment" />
-      </div>
+    <div class="card">
+      <input id="file" type="file" accept="image/*" capture="environment" />
 
       <div id="preview" class="preview">
         <img id="img" alt="Aperçu" />
@@ -258,7 +233,7 @@
       </div>
 
       <div class="hint">
-        Astuce : sur iPhone/Android, tu peux “Ajouter à l’écran d’accueil” pour l’utiliser comme une appli.
+        Astuce : sur iPhone/Android → menu du navigateur → “Ajouter à l’écran d’accueil”.
       </div>
     </div>
 
@@ -267,8 +242,11 @@
   </div>
 
 <script>
-  // 👉 Mets ici TON webhook n8n (URL de production)
-  const WEBHOOK_URL = "TON_URL_WEBHOOK_N8N";
+  // ✅ Ton webhook n8n (Production)
+  const WEBHOOK_URL = "https://actual.app.n8n.cloud/webhook/2a4af03d-393e-483e-acf8-6aede052f05a";
+
+  // ⚠️ Si tu as une erreur CORS, on utilisera un proxy Cloudflare gratuit (je te le donne plus bas)
+  // const WEBHOOK_URL = "https://TON-PROXY.workers.dev/?to=" + encodeURIComponent("https://actual.app.n8n.cloud/webhook/2a4af03d-393e-483e-acf8-6aede052f05a");
 
   const fileInput = document.getElementById('file');
   const preview = document.getElementById('preview');
@@ -302,6 +280,7 @@
 
     try {
       const form = new FormData();
+      // champ "photo" : on ajustera si ton Webhook attend un autre nom
       form.append("photo", f, f.name);
 
       const res = await fetch(WEBHOOK_URL, { method: "POST", body: form });
@@ -309,7 +288,7 @@
 
       const data = await res.json();
 
-      // Attendu: tableau [{produit, prix, enseigne, url?}, ...]
+      // Attendu: [{ enseigne, badge, score, promos:[...] }, ...]
       if (!Array.isArray(data) || data.length === 0) {
         setStatus('ok', 'Terminé, mais aucun résultat.');
         return;
@@ -317,28 +296,38 @@
 
       setStatus('ok', 'Terminé ✅');
 
-      resultEl.innerHTML = data.map(d => {
-        const produit = esc(d.produit ?? d.item ?? "Produit");
-        const prix = esc(String(d.prix ?? "-"));
-        const enseigne = esc(d.enseigne ?? "—");
-        const url = d.url ? esc(d.url) : "";
+      resultEl.innerHTML = data.map(store => {
+        const enseigne = esc(store.enseigne ?? "MAGASIN");
+        const badge = esc(store.badge ?? "🏪");
+        const score = esc(String(store.score ?? ""));
+        const promos = Array.isArray(store.promos) ? store.promos : [];
 
         return `
           <div class="deal">
-            <div class="dealLeft">
-              <p class="dealTitle">${produit}</p>
-              <div class="dealMeta">
-                <span class="tag">🏪 ${enseigne}</span>
-                ${url ? `<span class="tag">🔗 <a href="${url}" target="_blank" rel="noreferrer">Ouvrir</a></span>` : ``}
+            <div class="dealHeader">
+              <div>
+                <p class="dealTitle">${badge} ${enseigne}</p>
+                <div class="dealMeta">
+                  <span class="tag">Promos détectées</span>
+                </div>
               </div>
+              <div class="count">${score} promos</div>
             </div>
-            <div class="price">${prix} €</div>
+
+            ${promos.map(p => `<div class="promoLine">${esc(p)}</div>`).join("")}
           </div>
         `;
       }).join("");
 
     } catch (e) {
       setStatus('err', String(e.message || e));
+      resultEl.innerHTML = `
+        <div class="deal">
+          <p class="dealTitle">❌ Erreur</p>
+          <div class="promoLine">${esc(String(e.message || e))}</div>
+          <div class="hint">Si tu vois “CORS”, on active le proxy gratuit Cloudflare.</div>
+        </div>
+      `;
     } finally {
       btn.disabled = false;
     }
