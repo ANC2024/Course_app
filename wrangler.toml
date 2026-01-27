@@ -1,5 +1,6 @@
 name = "promofinder-app"
 compatibility_date = "2026-01-27"
+main = "workers-site/index.js"
 
 [site]
 bucket = "."
