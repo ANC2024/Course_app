@@ -1,0 +1,24 @@
+<!-- icon-192.png et icon-512.png -->
+<!-- Utilisez ce SVG pour créer vos icônes -->
+<!-- Convertissez-le en PNG avec https://cloudconvert.com/svg-to-png -->
+
+<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#007AFF"/>
+  
+  <!-- Shopping cart icon -->
+  <g transform="translate(128, 128)">
+    <!-- Cart body -->
+    <path d="M 50 50 L 200 50 L 220 150 L 70 150 Z" fill="white" stroke="white" stroke-width="8"/>
+    
+    <!-- Cart handle -->
+    <path d="M 50 50 L 30 0 L 0 0" fill="none" stroke="white" stroke-width="12" stroke-linecap="round"/>
+    
+    <!-- Wheels -->
+    <circle cx="100" cy="180" r="20" fill="white"/>
+    <circle cx="180" cy="180" r="20" fill="white"/>
+    
+    <!-- Percentage symbol -->
+    <text x="125" y="115" font-size="60" font-weight="bold" fill="#007AFF" text-anchor="middle">%</text>
+  </g>
+</svg>

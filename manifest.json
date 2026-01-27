@@ -1,8 +1,48 @@
 {
-  "name": "Courses",
-  "short_name": "Courses",
-  "start_url": ".",
+  "name": "PromoFinder - Comparateur de Promos",
+  "short_name": "PromoFinder",
+  "description": "Trouve les meilleures promotions pour ta liste de courses",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#0b1220"
+  "background_color": "#007AFF",
+  "theme_color": "#007AFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "1170x2532",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["shopping", "lifestyle", "finance"],
+  "shortcuts": [
+    {
+      "name": "Nouvelle recherche",
+      "short_name": "Recherche",
+      "description": "Analyser une nouvelle liste",
+      "url": "/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Historique",
+      "short_name": "Historique",
+      "description": "Voir l'historique",
+      "url": "/#history",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

@@ -1,351 +1,638 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0b1220">
-  <title>Courses</title>
-  <link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#007AFF">
+    <title>PromoFinder</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-512.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#101a33;
-      --text:#e9eefc;
-      --muted:#a8b3d6;
-      --line:rgba(255,255,255,.10);
-      --accent:#6ea8fe;
-      --accent2:#7c5cff;
-      --ok:#3ddc97;
-      --danger:#ff5a7a;
-      --warn:#ffd166;
-      --shadow: 0 14px 40px rgba(0,0,0,.35);
-      --radius: 18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      color:var(--text);
-      background: radial-gradient(1200px 700px at 20% -10%, rgba(110,168,254,.25), transparent 55%),
-                  radial-gradient(900px 600px at 110% 30%, rgba(124,92,255,.20), transparent 60%),
-                  var(--bg);
-      min-height:100vh;
-    }
-    .safe{
-      padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-    .brand{ display:flex; gap:10px; align-items:center; }
-    .logo{
-      width:42px; height:42px; border-radius:14px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: var(--shadow);
-    }
-    h1{ font-size:18px; margin:0; letter-spacing:.2px; line-height:1.2; }
-    .subtitle{ margin:2px 0 0; color:var(--muted); font-size:13px; }
-    .pill{
-      font-size:12px;
-      color:var(--muted);
-      border:1px solid var(--line);
-      padding:8px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.04);
-      backdrop-filter: blur(8px);
-    }
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
-    }
-    input[type="file"]{
-      width:100%;
-      padding: 12px;
-      border-radius: 14px;
-      border:1px dashed rgba(255,255,255,.22);
-      background: rgba(15,23,48,.45);
-      color: var(--muted);
-    }
-    .btnRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .btn{
-      flex:1;
-      min-width: 160px;
-      border:0;
-      border-radius: 16px;
-      padding: 14px 14px;
-      font-size: 15px;
-      font-weight: 650;
-      cursor:pointer;
-      transition: transform .06s ease, opacity .15s ease;
-    }
-    .btn:active{ transform: scale(.99); }
-    .btn.primary{
-      color:#0b1220;
-      background: linear-gradient(135deg, var(--accent), #93c5fd);
-    }
-    .btn.secondary{
-      color: var(--text);
-      background: rgba(255,255,255,.07);
-      border:1px solid var(--line);
-    }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .status{
-      font-size: 13px;
-      color: var(--muted);
-      display:flex; gap:10px; align-items:center;
-      margin-top: 10px;
-    }
-    .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: rgba(255,255,255,.22);
-    }
-    .dot.ok{ background: var(--ok); }
-    .dot.err{ background: var(--danger); }
-    .dot.wait{ background: var(--warn); }
+        :root {
+            --primary: #007AFF;
+            --background: #F2F2F7;
+            --card-bg: #FFFFFF;
+            --text-primary: #000000;
+            --text-secondary: #8E8E93;
+            --border: #C6C6C8;
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+        }
 
-    .preview{
-      display:none;
-      overflow:hidden;
-      border-radius: 16px;
-      border:1px solid var(--line);
-      background: rgba(15,23,48,.35);
-      margin-top:12px;
-    }
-    .preview img{ width:100%; display:block; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
 
-    .sectionTitle{
-      margin: 16px 2px 10px;
-      font-size: 14px;
-      color: var(--muted);
-      letter-spacing:.2px;
-    }
-    .deals{ display:flex; flex-direction:column; gap:10px; }
-    .deal{
-      background: rgba(15,23,48,.40);
-      border:1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
-      display:flex;
-      flex-direction: column;
-      gap:10px;
-    }
-    .dealHeader{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
-    }
-    .dealTitle{
-      margin:0;
-      font-weight: 800;
-      font-size: 15px;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-    .dealMeta{
-      margin-top:6px;
-      color: var(--muted);
-      font-size: 12.5px;
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
-      color: var(--text);
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .count{
-      font-weight: 800;
-      font-size: 13px;
-      white-space: nowrap;
-      align-self: flex-start;
-      padding: 6px 10px;
-      border-radius: 12px;
-      background: rgba(110,168,254,.16);
-      border: 1px solid rgba(110,168,254,.35);
-    }
-    .promoLine{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      border-radius: 14px;
-      padding:10px;
-      font-size: 13px;
-      color: rgba(233,238,252,.9);
-      white-space: pre-wrap;
-      line-height: 1.25;
-    }
-    .hint{
-      margin-top:10px;
-      font-size: 12.5px;
-      color: rgba(233,238,252,.75);
-      line-height: 1.35;
-    }
-    a{ color:#bcd6ff; text-decoration:none; }
-    a:hover{ text-decoration:underline; }
-  </style>
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #0051D5 100%);
+            color: white;
+            padding: max(env(safe-area-inset-top), 20px) 20px 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .upload-zone {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 2px dashed var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .upload-zone h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .upload-zone p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .preview-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .preview-container.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 320px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .results-container {
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .store-name {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .score {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .promo-item {
+            padding: 12px;
+            background: var(--background);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .promo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .history-stores {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .clear-btn {
+            background: var(--danger);
+            margin-top: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #000000;
+                --card-bg: #1C1C1E;
+                --text-primary: #FFFFFF;
+                --text-secondary: #8E8E93;
+                --border: #38383A;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="safe">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Courses</h1>
-          <div class="subtitle">Photo → meilleurs magasins → promos</div>
+    <div class="header">
+        <h1>🛒 PromoFinder</h1>
+        <p>Trouve les meilleures promos pour ta liste</p>
+    </div>
+
+    <div class="container">
+        <!-- Zone d'upload -->
+        <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">📸</div>
+            <h3>Prends une photo de ta liste</h3>
+            <p>Ou clique pour choisir une image</p>
+            <input type="file" id="fileInput" accept="image/*" capture="environment">
         </div>
-      </div>
-      <div class="pill">PWA</div>
+
+        <!-- Prévisualisation -->
+        <div class="preview-container" id="previewContainer">
+            <img id="previewImage" class="preview-image" alt="Aperçu">
+            <button class="btn" id="analyzeBtn">Analyser ma liste 🔍</button>
+            <button class="btn clear-btn" id="clearBtn">Annuler</button>
+        </div>
+
+        <!-- Résultats -->
+        <div class="results-container" id="resultsContainer">
+            <h2 class="section-title">💰 Tes meilleures promos</h2>
+            <div id="resultsContent"></div>
+            <button class="btn" id="newSearchBtn" style="margin-top: 20px;">Nouvelle recherche</button>
+        </div>
+
+        <!-- Historique -->
+        <div class="history-section" id="historySection">
+            <h2 class="section-title">📜 Historique</h2>
+            <div id="historyContent"></div>
+        </div>
     </div>
 
-    <div class="card">
-      <input id="file" type="file" accept="image/*" capture="environment" />
-
-      <div id="preview" class="preview">
-        <img id="img" alt="Aperçu" />
-      </div>
-
-      <div class="btnRow">
-        <button id="btn" class="btn primary" onclick="sendPhoto()">📸 Analyser la photo</button>
-        <button class="btn secondary" onclick="resetAll()">↩︎ Réinitialiser</button>
-      </div>
-
-      <div id="status" class="status">
-        <span class="dot"></span>
-        <span>Choisis une photo pour commencer.</span>
-      </div>
-
-      <div class="hint">
-        Astuce : sur iPhone/Android → menu du navigateur → “Ajouter à l’écran d’accueil”.
-      </div>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Analyse en cours...</div>
+            <div class="loading-subtext">On cherche les meilleures promos 🔎</div>
+        </div>
     </div>
 
-    <div class="sectionTitle">Résultats</div>
-    <div id="result" class="deals"></div>
-  </div>
+    <script>
+        const WEBHOOK_URL = 'https://actual.app.n8n.cloud/webhook-test/9299c8d3-aedf-4ad2-bee3-34de95b365e9';
+        
+        let currentImage = null;
+        let currentImageData = null;
 
-<script>
-  // ✅ Ton webhook n8n (Production)
-  const WEBHOOK_URL = "https://actual.app.n8n.cloud/webhook/2a4af03d-393e-483e-acf8-6aede052f05a";
+        // Elements
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const resultsContent = document.getElementById('resultsContent');
+        const newSearchBtn = document.getElementById('newSearchBtn');
+        const historySection = document.getElementById('historySection');
+        const historyContent = document.getElementById('historyContent');
 
-  // ⚠️ Si tu as une erreur CORS, on utilisera un proxy Cloudflare gratuit (je te le donne plus bas)
-  // const WEBHOOK_URL = "https://TON-PROXY.workers.dev/?to=" + encodeURIComponent("https://actual.app.n8n.cloud/webhook/2a4af03d-393e-483e-acf8-6aede052f05a");
+        // Upload zone click
+        uploadZone.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-  const fileInput = document.getElementById('file');
-  const preview = document.getElementById('preview');
-  const img = document.getElementById('img');
-  const statusEl = document.getElementById('status');
-  const resultEl = document.getElementById('result');
-  const btn = document.getElementById('btn');
+        // Drag & Drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
 
-  function setStatus(state, text){
-    const dot = statusEl.querySelector('.dot');
-    dot.className = 'dot' + (state ? ' ' + state : '');
-    statusEl.querySelector('span:last-child').textContent = text;
-  }
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
 
-  fileInput.addEventListener('change', () => {
-    const f = fileInput.files?.[0];
-    if (!f) return;
-    img.src = URL.createObjectURL(f);
-    preview.style.display = 'block';
-    resultEl.innerHTML = "";
-    setStatus('ok', 'Photo prête. Lance l’analyse.');
-  });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImageUpload(file);
+            }
+        });
 
-  async function sendPhoto() {
-    const f = fileInput.files?.[0];
-    if (!f) { setStatus('err', 'Choisis une photo d’abord.'); return; }
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        });
 
-    btn.disabled = true;
-    setStatus('wait', 'Analyse en cours…');
-    resultEl.innerHTML = "";
+        // Handle image upload
+        function handleImageUpload(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentImageData = e.target.result;
+                previewImage.src = currentImageData;
+                previewContainer.classList.add('show');
+                resultsContainer.classList.remove('show');
+            };
+            reader.readAsDataURL(file);
+            currentImage = file;
+        }
 
-    try {
-      const form = new FormData();
-      // champ "photo" : on ajustera si ton Webhook attend un autre nom
-      form.append("photo", f, f.name);
+        // Analyze button
+        analyzeBtn.addEventListener('click', async () => {
+            if (!currentImage) return;
 
-      const res = await fetch(WEBHOOK_URL, { method: "POST", body: form });
-      if (!res.ok) throw new Error("Erreur n8n: " + res.status);
+            loadingOverlay.classList.add('show');
 
-      const data = await res.json();
+            try {
+                const formData = new FormData();
+                formData.append('file', currentImage);
 
-      // Attendu: [{ enseigne, badge, score, promos:[...] }, ...]
-      if (!Array.isArray(data) || data.length === 0) {
-        setStatus('ok', 'Terminé, mais aucun résultat.');
-        return;
-      }
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
 
-      setStatus('ok', 'Terminé ✅');
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'analyse');
+                }
 
-      resultEl.innerHTML = data.map(store => {
-        const enseigne = esc(store.enseigne ?? "MAGASIN");
-        const badge = esc(store.badge ?? "🏪");
-        const score = esc(String(store.score ?? ""));
-        const promos = Array.isArray(store.promos) ? store.promos : [];
+                const data = await response.json();
+                displayResults(data);
+                saveToHistory(data);
+                loadingOverlay.classList.remove('show');
+                previewContainer.classList.remove('show');
+                resultsContainer.classList.add('show');
+            } catch (error) {
+                console.error('Erreur:', error);
+                loadingOverlay.classList.remove('show');
+                alert('❌ Une erreur est survenue. Réessaie dans quelques instants.');
+            }
+        });
 
-        return `
-          <div class="deal">
-            <div class="dealHeader">
-              <div>
-                <p class="dealTitle">${badge} ${enseigne}</p>
-                <div class="dealMeta">
-                  <span class="tag">Promos détectées</span>
+        // Display results
+        function displayResults(data) {
+            const results = data.results || [];
+            
+            if (results.length === 0) {
+                resultsContent.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😔</div>
+                        <p>Aucune promo trouvée pour ta liste aujourd'hui</p>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContent.innerHTML = results.map((store, index) => `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="store-name">
+                            ${store.badge} ${store.enseigne}
+                            ${index === 0 ? '<span class="badge">TOP</span>' : ''}
+                        </div>
+                        <div class="score">${store.score} promo${store.score > 1 ? 's' : ''}</div>
+                    </div>
+                    <div>
+                        ${store.promos.map(promo => `
+                            <div class="promo-item">${promo}</div>
+                        `).join('')}
+                    </div>
                 </div>
-              </div>
-              <div class="count">${score} promos</div>
-            </div>
+            `).join('');
+        }
 
-            ${promos.map(p => `<div class="promoLine">${esc(p)}</div>`).join("")}
-          </div>
-        `;
-      }).join("");
+        // Save to history
+        function saveToHistory(data) {
+            const history = JSON.parse(localStorage.getItem('promoHistory') || '[]');
+            
+            const entry = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                image: currentImageData,
+                results: data.results || [],
+                storesCount: (data.results || []).length
+            };
 
-    } catch (e) {
-      setStatus('err', String(e.message || e));
-      resultEl.innerHTML = `
-        <div class="deal">
-          <p class="dealTitle">❌ Erreur</p>
-          <div class="promoLine">${esc(String(e.message || e))}</div>
-          <div class="hint">Si tu vois “CORS”, on active le proxy gratuit Cloudflare.</div>
-        </div>
-      `;
-    } finally {
-      btn.disabled = false;
-    }
-  }
+            history.unshift(entry);
+            
+            // Keep only last 10 entries
+            if (history.length > 10) {
+                history.pop();
+            }
 
-  function resetAll() {
-    fileInput.value = "";
-    preview.style.display = "none";
-    img.src = "";
-    resultEl.innerHTML = "";
-    setStatus('', 'Choisis une photo pour commencer.');
-  }
+            localStorage.setItem('promoHistory', JSON.stringify(history));
+            loadHistory();
+        }
 
-  function esc(s){
-    return String(s).replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-    }[c]));
-  }
-</script>
+        // Load history
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('promoHistory') || '[]');
+            
+            if (history.length === 0) {
+                historyContent.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <p>Aucun historique pour le moment</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyContent.innerHTML = history.map(entry => {
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const stores = entry.results.map(r => r.enseigne).join(', ');
+
+                return `
+                    <div class="history-item" onclick="loadHistoryItem(${entry.id})">
+                        <img src="${entry.image}" class="history-thumbnail" alt="Liste">
+                        <div class="history-info">
+                            <div class="history-date">${formattedDate}</div>
+                            <div class="history-stores">${entry.storesCount} magasin${entry.storesCount > 1 ? 's' : ''}</div>
+                        </div>
+                        <div style="font-size: 20px;">→</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load history item
+        window.loadHistoryItem = function(id) {
+            const history = JSON.parse(localStorage.getItem('promoHistory') || '[]');
+            const entry = history.find(h => h.id === id);
+            
+            if (entry) {
+                displayResults({ results: entry.results });
+                resultsContainer.classList.add('show');
+                previewContainer.classList.remove('show');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // Clear button
+        clearBtn.addEventListener('click', () => {
+            currentImage = null;
+            currentImageData = null;
+            previewContainer.classList.remove('show');
+            fileInput.value = '';
+        });
+
+        // New search button
+        newSearchBtn.addEventListener('click', () => {
+            currentImage = null;
+            currentImageData = null;
+            resultsContainer.classList.remove('show');
+            fileInput.value = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Load history on page load
+        loadHistory();
+
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
 </body>
 </html>
