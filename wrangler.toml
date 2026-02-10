@@ -1,4 +1,4 @@
-name = "promofinder-app"
+name = "course-app"
 compatibility_date = "2026-01-27"
 main = "workers-site/index.js"
 
